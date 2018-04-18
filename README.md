@@ -1,2 +1,4 @@
 # adfraud_detection
-kaggle comp
+kaggle competition (in progress).
+
+Updates being made daily.
