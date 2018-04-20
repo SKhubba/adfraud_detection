@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
-
 import pandas as pd
 import numpy as np
 import time
@@ -13,6 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.dates import DateFormatter
 from pandas import Series, DataFrame, Panel
+import random
 
 # Read in the sample training data frame (n = 100,000)
 df = pd.read_csv("train_sample.csv")
@@ -97,3 +91,27 @@ plt.ylabel('clicks')
 plt.title('Clicks per minute in data sample (11/8/2017 and 11/7/2017)')
 
 plt.plot(np.array(minute_series['2017-11-07 00:00:00':'2017-11-07 23:59:59']), 'orange')
+
+# take 5 randomly selected ips and plot
+
+random.seed(10)
+ip_rand = random.sample(list(df['ip']), 6)
+
+date_df = pd.DataFrame(np.zeros((len(date_series),len(ip_rand))), index = date_series.index.values)
+date_df.columns = ip_rand
+
+ip_df = df[df['ip'].isin(ip_rand)]
+
+def clean(x, names):
+    row_init = pd.DataFrame(np.zeros((1,len(names))), index = [x['click_time'][0]])
+    row_init.columns = names
+    values = x['ip'].value_counts()
+    for i in range(len(row_init.columns)):
+        if row_init.columns[i] in values.index.values:
+            row_init.iloc[0,i] = int(values[values.index == row_init.columns[i]])
+    return(row_init)
+
+    
+test = pd.DataFrame({'click_time': ['2017-11-09 14:08:53', '2017-11-09 14:08:53', '2017-11-09 14:08:53', '2017-11-09 14:08:53'], 'ip': [1,1,2,3]})              
+temp = clean(test,ip_rand)
+names = ip_rand
